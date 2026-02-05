@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useXR, useHitTest } from '@react-three/xr'
+import { useXR, useXRHitTest } from '@react-three/xr'
 import { Html } from '@react-three/drei'
 import { Lock, Unlock, Plus, Minus, RotateCcw } from 'lucide-react'
 import * as THREE from 'three'
@@ -14,19 +14,24 @@ export function ARManager({ children }: { children: React.ReactNode }) {
     const bottleGroup = useRef<THREE.Group>(null)
     const reticleRef = useRef<THREE.Mesh>(null)
 
-    useHitTest((hitMatrix: THREE.Matrix4) => {
+    const matrixHelper = useRef(new THREE.Matrix4())
+
+    useXRHitTest((results, getWorldMatrix) => {
         if (isLocked) return
 
-        if (hitMatrix && reticleRef.current && bottleGroup.current) {
+        if (results.length > 0 && reticleRef.current && bottleGroup.current) {
+            // Get position from first hit
+            getWorldMatrix(matrixHelper.current, results[0])
+
             // Apply hit matrix to reticle
             reticleRef.current.visible = true
-            reticleRef.current.position.setFromMatrixPosition(hitMatrix)
-            reticleRef.current.quaternion.setFromRotationMatrix(hitMatrix)
+            reticleRef.current.position.setFromMatrixPosition(matrixHelper.current)
+            reticleRef.current.quaternion.setFromRotationMatrix(matrixHelper.current)
 
             // Also move bottle to this position automatically (preview mode)
             bottleGroup.current.position.copy(reticleRef.current.position)
         }
-    })
+    }, 'viewer')
 
     if (!isPresenting) {
         return <>{children}</>
