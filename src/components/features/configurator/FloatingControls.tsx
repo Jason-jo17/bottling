@@ -30,7 +30,7 @@ export function FloatingControls() {
     }
 
     return (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border border-border bg-card/80 p-2 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-card/50">
+        <div className="absolute bottom-[42vh] md:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border border-border bg-card/80 p-2 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-card/50 z-40 transition-all">
             <Button
                 variant="ghost"
                 size="sm"
