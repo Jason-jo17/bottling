@@ -10,6 +10,7 @@ import type {
     EnvironmentPreset,
     LabelItem,
 } from '../types/config'
+import { getLabelData } from '../3d/utils/bottleGeometry'
 
 const DEFAULT_CONFIG: BottleConfig = {
     model: 'classic',
@@ -61,7 +62,29 @@ export const useConfigStore = create<ConfigStore>()(
                 ...DEFAULT_CONFIG,
                 cameraTarget: null, // Init
 
-                setModel: (model) => set({ model }),
+                setModel: (model) => {
+                    // When changing model, reproject labels to new radius
+                    const { position: defaultPos } = getLabelData(model)
+                    const newRadius = defaultPos[2] // Z coordinate is the radius
+
+                    set((state) => {
+                        const updatedLabels = state.labels.map((label) => {
+                            // Recover angle from rotation or current position
+                            // Use rotation[1] if available and reliable, otherwise atan2(x, z)
+                            const angle = label.rotation[1] || 0
+
+                            // Calculate new Cartesian coordinates on the new cylinder surface
+                            const newX = newRadius * Math.sin(angle)
+                            const newZ = newRadius * Math.cos(angle)
+
+                            return {
+                                ...label,
+                                position: [newX, label.position[1], newZ] as [number, number, number]
+                            }
+                        })
+                        return { model, labels: updatedLabels }
+                    })
+                },
                 setBodyColor: (color) => set({ bodyColor: color }),
                 setBodyMaterial: (material) => set({ bodyMaterial: material }),
                 setBodyOpacity: (opacity) => set({ bodyOpacity: opacity }),

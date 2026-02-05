@@ -1,14 +1,14 @@
 import { Canvas as R3FCanvas } from '@react-three/fiber'
-import { Preload, PerformanceMonitor } from '@react-three/drei'
-import { Suspense, useState } from 'react'
+import { PerformanceMonitor, Html } from '@react-three/drei'
+import { Suspense, useState, Component, type ErrorInfo, type ReactNode } from 'react'
 import { Scene } from './Scene'
 import { LoadingFallback } from './components/LoadingFallback'
+import { XR } from '@react-three/xr'
+import { xrStore } from '../stores/xrStore'
 
 interface CanvasProps {
     className?: string
 }
-
-import React, { Component, ErrorInfo, ReactNode } from 'react'
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
     constructor(props: { children: ReactNode }) {
@@ -45,8 +45,6 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
     }
 }
 
-import { Html } from '@react-three/drei'
-
 export function Canvas({ className }: CanvasProps) {
     const [dpr, setDpr] = useState(1.5)
 
@@ -62,23 +60,25 @@ export function Canvas({ className }: CanvasProps) {
                 dpr={dpr}
                 gl={{
                     antialias: true,
-                    alpha: false,
+                    alpha: true, // Needed for transparent background in AR
                     preserveDrawingBuffer: true,
                     powerPreference: 'high-performance',
                     stencil: false,
                 }}
                 shadows
             >
-                <PerformanceMonitor
-                    onIncline={() => setDpr(Math.min(2, dpr + 0.5))}
-                    onDecline={() => setDpr(Math.max(1, dpr - 0.5))}
-                >
-                    <ErrorBoundary>
-                        <Suspense fallback={<LoadingFallback />}>
-                            <Scene />
-                        </Suspense>
-                    </ErrorBoundary>
-                </PerformanceMonitor>
+                <XR store={xrStore}>
+                    <PerformanceMonitor
+                        onIncline={() => setDpr(Math.min(2, dpr + 0.5))}
+                        onDecline={() => setDpr(Math.max(1, dpr - 0.5))}
+                    >
+                        <ErrorBoundary>
+                            <Suspense fallback={<LoadingFallback />}>
+                                <Scene />
+                            </Suspense>
+                        </ErrorBoundary>
+                    </PerformanceMonitor>
+                </XR>
             </R3FCanvas>
         </div>
     )

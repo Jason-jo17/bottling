@@ -5,10 +5,13 @@ import { Lighting } from './components/Lighting'
 import { Suspense } from 'react'
 import { useConfigStore } from '../stores/useConfigStore'
 
+import { useXR } from '@react-three/xr'
+
 export function Scene() {
     const environment = useConfigStore((s) => s.environment)
     const sceneBackgroundColor = useConfigStore((s) => s.sceneBackgroundColor) || '#ffffff'
     const controlsRef = useRef<CameraControls>(null)
+    const isPresenting = useXR((state) => state.mode === 'immersive-ar')
 
     useEffect(() => {
         // Subscribe to store changes for cameraTarget
@@ -50,12 +53,15 @@ export function Scene() {
 
     return (
         <Suspense fallback={null}>
-            <color attach="background" args={[sceneBackgroundColor]} />
+            {!isPresenting && <color attach="background" args={[sceneBackgroundColor]} />}
             <Environment preset={environment} background={false} />
             <Lighting />
 
-            <Center>
-                <Bottle />
+            {/* In AR, scale down to realistic size (approx 30cm) and possibly lower to floor */}
+            <Center top={!isPresenting}>
+                <group scale={isPresenting ? 0.1 : 1}>
+                    <Bottle />
+                </group>
             </Center>
 
             <CameraControls

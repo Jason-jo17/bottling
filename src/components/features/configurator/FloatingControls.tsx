@@ -1,5 +1,6 @@
-import { Move3d } from 'lucide-react'
+import { Move3d, Maximize, Scan } from 'lucide-react'
 import { Button } from '../../ui/Button'
+import { xrStore } from '../../../stores/xrStore'
 
 // This component needs to be inside Canvas or have access to the camera
 // For now, let's make it a UI component that dispatches events or uses a global store to control camera
@@ -95,6 +96,27 @@ export function FloatingControls() {
                 title="Cap View"
             >
                 <span className="font-bold text-xs">Cp</span>
+            </Button>
+            <div className="h-4 w-px bg-border" />
+            <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => moveCamera('front')} // 'front' is a good default for reset
+                className="h-8 w-8 rounded-full p-0"
+                title="Fit to Screen (Reset)"
+            >
+                <Maximize className="h-4 w-4" />
+            </Button>
+            <div className="h-4 w-px bg-border" />
+            <Button
+                variant="primary"
+                size="sm"
+                onClick={() => xrStore.enterAR()}
+                className="h-8 px-2 rounded-full shadow-lg gap-1 border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary"
+                title="View in AR"
+            >
+                <Scan className="h-4 w-4" />
+                <span className="text-[10px] font-bold">AR</span>
             </Button>
         </div>
     )

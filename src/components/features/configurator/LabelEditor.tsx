@@ -25,7 +25,8 @@ export function LabelEditor() {
             // Rotation 0 means front. scale is default.
             position: position as [number, number, number],
             rotation: [0, 0, 0],
-            scale: scale as [number, number, number],
+            // Start with a Wide aspect ratio for text (Landscape)
+            scale: [1.2, 0.6, 1], // Wide width, shorter height
             color: '#000000',
             // font: 'Inter', // Causing errors
             fontSize: 72
