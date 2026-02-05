@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 import { useConfigStore } from '../stores/useConfigStore'
 
 import { useXR } from '@react-three/xr'
+import { ARManager } from './components/ARManager'
 
 export function Scene() {
     const environment = useConfigStore((s) => s.environment)
@@ -57,11 +58,12 @@ export function Scene() {
             <Environment preset={environment} background={false} />
             <Lighting />
 
-            {/* In AR, scale down to realistic size (approx 30cm) and possibly lower to floor */}
+            {/* AR Manager handles scaling, placement, and hit-testing in AR mode */}
+            {/* When NOT in AR, it just passes children through */}
             <Center top={!isPresenting}>
-                <group scale={isPresenting ? 0.1 : 1}>
+                <ARManager>
                     <Bottle />
-                </group>
+                </ARManager>
             </Center>
 
             <CameraControls
