@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test - Bottle Customizer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .test-box {
+            background: #16213e;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .success {
+            border-left: 4px solid #00ff00;
+        }
+
+        .error {
+            border-left: 4px solid #ff0000;
+        }
+
+        #app-container {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #00ff00;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Bottle Customizer - Debug Test</h1>
+
+    <div class="test-box success">
+        <h2>✅ HTML Loaded</h2>
+        <p>If you can see this, the HTML is loading correctly.</p>
+    </div>
+
+    <div class="test-box" id="js-test">
+        <h2>⏳ JavaScript Test</h2>
+        <p id="js-status">Testing...</p>
+    </div>
+
+    <div class="test-box" id="react-test">
+        <h2>⏳ React Test</h2>
+        <p id="react-status">Testing...</p>
+    </div>
+
+    <div class="test-box" id="three-test">
+        <h2>⏳ Three.js Test</h2>
+        <p id="three-status">Testing...</p>
+        <div id="app-container"></div>
+    </div>
+
+    <script type="module">
+        // Test 1: JavaScript
+        document.getElementById('js-status').textContent = '✅ JavaScript is working!';
+        document.getElementById('js-test').classList.add('success');
+
+        // Test 2: React
+        import React from 'react';
+        import ReactDOM from 'react-dom/client';
+        document.getElementById('react-status').textContent = '✅ React imported successfully!';
+        document.getElementById('react-test').classList.add('success');
+
+        // Test 3: Three.js
+        import * as THREE from 'three';
+        document.getElementById('three-status').textContent = '✅ Three.js imported! Creating test scene...';
+
+        // Create a simple Three.js scene
+        const container = document.getElementById('app-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a0a);
+
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 2, 5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Add a simple cylinder (bottle placeholder)
+        const geometry = new THREE.CylinderGeometry(0.75, 0.75, 3, 32);
+        const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+        const bottle = new THREE.Mesh(geometry, material);
+        scene.add(bottle);
+
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            bottle.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        document.getElementById('three-status').innerHTML = '✅ Three.js working! You should see a rotating green cylinder above.';
+        document.getElementById('three-test').classList.add('success');
+    </script>
+</body>
+
+</html>
