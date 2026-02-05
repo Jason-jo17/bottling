@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react'
-import { Group, CylinderGeometry } from 'three'
+import { Group } from 'three'
 import { useConfigStore } from '../../../stores/useConfigStore'
 import { BottleLabel } from './BottleLabel'
 import { getBottleGeometry, getCapGeometry, getNeckRingGeometry } from '../../utils/bottleGeometry'

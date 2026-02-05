@@ -17,7 +17,7 @@ export function LabelEditor() {
     const [expandedId, setExpandedId] = useState<string | null>(null)
 
     const handleAddText = () => {
-        const { position, scale } = getLabelData(model)
+        const { position } = getLabelData(model)
         addLabel({
             type: 'text',
             content: 'New Label',
